@@ -451,11 +451,11 @@
             document.getElementById('correct-answers').textContent = score / 5;
 
             if (score >= 80) {
-                resultEl.innerHTML += `
+                resultEl.innerHTML = `
                     <h2 class="romantic-message">Selamat bubub! 💖</h2>
                 `;
             } else {
-                resultEl.innerHTML += `
+                resultEl.innerHTML = `
                     <h2>Jangan nyerah!</h2>
                     <p>Yuk kerjain lagi💖</p>
                 `;
