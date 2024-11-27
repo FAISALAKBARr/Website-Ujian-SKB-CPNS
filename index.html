@@ -444,22 +444,22 @@
                 if (answer === quizData[index].correct) {
                     score += 5; // Each question is worth 5 points (100/20)
                 }
-                if (score >= 80) {
-                    resultEl.innerHTML += `
-                        <h2 class="romantic-message">Selamat bubub! 💖</h2>
-                    `;
-                } else {
-                    resultEl.innerHTML += `
-                        <h2>Jangan nyerah!</h2>
-                        <p>Yuk kerjain lagi💖</p>
-                    `;
-            }
             });
-
             quizEl.style.display = 'none';
             resultEl.style.display = 'block';
             document.getElementById('score').textContent = score;
             document.getElementById('correct-answers').textContent = score / 5;
+
+            if (score >= 80) {
+                resultEl.innerHTML += `
+                    <h2 class="romantic-message">Selamat bubub! 💖</h2>
+                `;
+            } else {
+                resultEl.innerHTML += `
+                    <h2>Jangan nyerah!</h2>
+                    <p>Yuk kerjain lagi💖</p>
+                `;
+            }
         }
 
         prevBtn.addEventListener('click', () => {
