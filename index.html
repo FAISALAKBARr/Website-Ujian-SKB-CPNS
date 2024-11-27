@@ -177,11 +177,18 @@
             </div>
         </div>
 
-        <div class="result-container" id="result">
+<!--         <div class="result-container" id="result">
             <h2>Hasil Tes</h2>
             <p>Skor kamu: <span id="score">0</span> dari 100</p>
             <p>Jumlah Benar: <span id="correct-answers">0</span> dari 20 soal</p>
             <button onclick="location.reload()">Ulangi Tes</button>
+        </div>
+    </div> -->
+
+            <div class="result-container" id="result">
+            <h2>Hasil Tes</h2>
+            <p>Skor kamu: <span id="score">0</span> dari 100</p>
+            <p>Jumlah Benar: <span id="correct-answers">0</span> dari 20 soal</p>
         </div>
     </div>
 
@@ -439,37 +446,24 @@
         }
 
         function showResult() {
-            score = 0;
-            answers.forEach((answer, index) => {
-                if (answer === quizData[index].correct) {
-                    score += 5; // Each question is worth 5 points (100/20)
-                }
-            });
+            score = answers.filter((answer, index) => answer === quizData[index].correct).length * 5;
+            // score = 0;
+            // answers.forEach((answer, index) => {
+            //     if (answer === quizData[index].correct) {
+            //         score += 5; // Each question is worth 5 points (100/20)
+            //     }
+            // });
             quizEl.style.display = 'none';
             resultEl.style.display = 'block';
             document.getElementById('score').textContent = score;
             document.getElementById('correct-answers').textContent = score / 5;
 
             if (score >= 80) {
-                resultEl.innerHTML += `
-                    <h2 class="romantic-message">Selamat bubub! 💖</h2>
-                    <h2>Hasil Tes</h2>
-                    <p>Skor kamu: <span id="score">0</span> dari 100</p>
-                    <p>Jumlah Benar: <span id="correct-answers">0</span> dari 20 soal</p>
-                    <button onclick="location.reload()">Ulangi Tes</button>
-                `;
-            } else if (score <= 79) {
-                resultEl.innerHTML += `
-                    // <h2>Hasil Tes</h2>
-                    // <p>Skor kamu: <span id="score">0</span> dari 100</p>
-                    // <p>Jumlah Benar: <span id="correct-answers">0</span> dari 20 soal</p>
-                    // <button onclick="location.reload()">Ulangi Tes</button>
-                    <h2>Jangan nyerah!</h2>
-                    <p>Yuk kerjain lagi💖</p>
-                `;
-            }else{
-                    `<p>Yuk kerjain lagi💖</p>`
+                resultEl.innerHTML += `<h2 class="romantic-message">Selamat bubub! 💖</h2>`;
+            } else {
+                resultEl.innerHTML += `<h2>Jangan nyerah!</h2><p>Yuk kerjain lagi 💖</p>`;
             }
+                resultEl.innerHTML += `<button onclick="location.reload()">Ulangi Tes</button>`;
         }
 
         prevBtn.addEventListener('click', () => {
