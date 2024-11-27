@@ -453,9 +453,17 @@
             if (score >= 80) {
                 resultEl.innerHTML += `
                     <h2 class="romantic-message">Selamat bubub! 💖</h2>
+                    <h2>Hasil Tes</h2>
+                    <p>Skor kamu: <span id="score">0</span> dari 100</p>
+                    <p>Jumlah Benar: <span id="correct-answers">0</span> dari 20 soal</p>
+                    <button onclick="location.reload()">Ulangi Tes</button>
                 `;
             } else if (score <= 79) {
                 resultEl.innerHTML += `
+                    <h2>Hasil Tes</h2>
+                    <p>Skor kamu: <span id="score">0</span> dari 100</p>
+                    <p>Jumlah Benar: <span id="correct-answers">0</span> dari 20 soal</p>
+                    <button onclick="location.reload()">Ulangi Tes</button>
                     <h2>Jangan nyerah!</h2>
                     <p>Yuk kerjain lagi💖</p>
                 `;
