@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi SKB CPNS Kemenag - Moderasi Beragama</title>
+    <link rel="icon" href="love.png" type="image/png">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #a5d0ff;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .quiz-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 10px 15px;
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background-color: rgb(118, 185, 251);
+        }
+
+        .option.selected {
+            background-color: #ff6f91;
+            color: white;
+            border-color: #ffacbf;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .prev-btn, .next-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .prev-btn:hover, .next-btn:hover {
+            background-color: #ff6f91;
+        }
+
+        .submit-btn {
+            background-color: #28a745;
+            color: white;
+            display: none;
+        }
+
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+
+        .result-container {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: #ff6f91;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            .quiz-container {
+                padding: 15px;
+            }
+
+            button {
+                padding: 8px 16px;
+            }
+        }
+
+        @keyframes fadeInHeart {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Simulasi SKB CPNS Kemenag</h1>
+            <p>Tema: Moderasi Beragama</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <div class="quiz-container" id="quiz">
+            <div class="question" id="question"></div>
+            <div class="options" id="options"></div>
+            <div class="navigation">
+                <button class="prev-btn" id="prev">Eh Mundur Bentar</button>
+                <button class="next-btn" id="next">GOO BUBUB</button>
+                <button class="submit-btn" id="submit">Finish yeyy 🙂‍↕</button>
+            </div>
+        </div>
+
+        <div class="result-container" id="result">
+            <h2>Hasil Tes</h2>
+            <p>Skor Anda: <span id="score">0</span> dari 100</p>
+            <p>Jumlah Benar: <span id="correct-answers">0</span> dari 20 soal</p>
+            <button onclick="location.reload()">Ulangi Tes</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "1. Dalam konteks moderasi beragama, apakah makna prinsip (berimbang) menurut buku Moderasi Beragama Kemenag?",
+                options: [
+                    "Menyeimbangkan antara teks dan konteks",
+                    "Selalu berada di tengah-tengah",
+                    "Tidak memihak pada kelompok manapun",
+                    "Menghindari sikap ekstrem dalam beragama"
+                ],
+                correct: 0
+            },
+            {
+                question: "2. Pada tahun berapa Kementerian Agama RI mencanangkan (Tahun Moderasi Beragama)?",
+                options: [
+                    "2018",
+                    "2019",
+                    "2020",
+                    "2021"
+                ],
+                correct: 1
+            },
+            {
+                question: "3. Berdasarkan buku Moderasi Beragama, manakah yang BUKAN merupakan strategi utama penguatan moderasi beragama?",
+                options: [
+                    "Sosialisasi gagasan moderasi beragama",
+                    "Pelembagaan dalam program yang mengikat",
+                    "Penerapan sanksi hukum bagi yang melanggar",
+                    "Integrasi dalam RPJMN 2020-2024"
+                ],
+                correct: 2
+            },
+            {
+                question: "4. Apa tujuan utama penerbitan buku Moderasi Beragama oleh Kementerian Agama RI?",
+                options: [
+                    "Sebagai bahan ajar di sekolah",
+                    "Sebagai rujukan pemahaman moderasi beragama",
+                    "Sebagai pedoman hukum keagamaan",
+                    "Sebagai materi pelatihan ASN"
+                ],
+                correct: 1
+            },
+            {
+                question: "5. Dalam implementasi moderasi beragama, apakah yang dimaksud dengan (toleransi aktif)?",
+                options: [
+                    "Sikap pasif terhadap perbedaan",
+                    "Keterlibatan aktif dalam dialog antariman",
+                    "Pemaksaan keyakinan pada orang lain",
+                    "Penolakan terhadap ekstremisme"
+                ],
+                correct: 1
+            },
+            {
+                question: "6. Menurut buku tersebut, apa tantangan utama moderasi beragama di era digital?",
+                options: [
+                    "Penyebaran hoaks keagamaan",
+                    "Keterbatasan akses internet",
+                    "Kurangnya literasi digital",
+                    "Mahalnya biaya komunikasi"
+                ],
+                correct: 0
+            },
+            {
+                question: "7. Bagaimana posisi moderasi beragama dalam RPJMN 2020-2024?",
+                options: [
+                    "Sebagai program tambahan",
+                    "Sebagai bagian strategi kebudayaan",
+                    "Sebagai kebijakan opsional",
+                    "Sebagai program temporer"
+                ],
+                correct: 1
+            },
+            {
+                question: "8. Apa indikator utama moderasi beragama menurut buku tersebut?",
+                options: [
+                    "Kepatuhan pada hukum negara",
+                    "Sikap adil dan berimbang",
+                    "Partisipasi politik",
+                    "Ketaatan beribadah"
+                ],
+                correct: 1
+            },
+            {
+                question: "9. Siapa yang bertanggung jawab dalam implementasi moderasi beragama menurut buku tersebut?",
+                options: [
+                    "Hanya Kementerian Agama",
+                    "Seluruh umat beragama",
+                    "Pemerintah pusat saja",
+                    "Tokoh agama saja"
+                ],
+                correct: 1
+            },
+            {
+                question: "10. Bagaimana hubungan antara moderasi beragama dengan nilai-nilai kebangsaan?",
+                options: [
+                    "Saling bertentangan",
+                    "Tidak ada hubungan",
+                    "Saling mendukung",
+                    "Berjalan sendiri-sendiri"
+                ],
+                correct: 2
+            },
+            {
+                question: "11. Apa peran Badan Litbang dan Diklat Kemenag dalam moderasi beragama?",
+                options: [
+                    "Pengawasan pelaksanaan",
+                    "Penyusunan regulasi",
+                    "Penelitian dan pengembangan konsep",
+                    "Penindakan pelanggaran"
+                ],
+                correct: 2
+            },
+            {
+                question: "12. Dalam konteks moderasi beragama, apa yang dimaksud dengan (ekstrem kanan)?",
+                options: [
+                    "Sikap liberal dalam beragama",
+                    "Sikap terlalu keras dalam beragama",
+                    "Sikap moderat dalam beragama",
+                    "Sikap toleran dalam beragama"
+                ],
+                correct: 1
+            },
+            {
+                question: "13. Menurut buku tersebut, apa modal sosial-kultural Indonesia dalam moderasi beragama?",
+                options: [
+                    "Kekayaan alam",
+                    "Tradisi bertenggang rasa",
+                    "Sistem politik",
+                    "Teknologi informasi"
+                ],
+                correct: 1
+            },
+            {
+                question: "14. Bagaimana cara implementasi moderasi beragama di lingkungan ASN Kemenag?",
+                options: [
+                    "Melalui sanksi administratif",
+                    "Melalui internalisasi nilai",
+                    "Melalui paksaan",
+                    "Melalui reward"
+                ],
+                correct: 1
+            },
+            {
+                question: "15. Apa fungsi dialog lintas-iman dalam moderasi beragama?",
+                options: [
+                    "Menyatukan keyakinan",
+                    "Memperkuat toleransi",
+                    "Mengubah keyakinan",
+                    "Menghapus perbedaan"
+                ],
+                correct: 1
+            },
+            {
+                question: "16. Bagaimana posisi moderasi beragama dalam kehidupan bernegara?",
+                options: [
+                    "Terpisah dari negara",
+                    "Bertentangan dengan negara",
+                    "Bagian integral berbangsa",
+                    "Urusan pribadi saja"
+                ],
+                correct: 2
+            },
+            {
+                question: "17. Apa peran FKUB dalam implementasi moderasi beragama?",
+                options: [
+                    "Pembuat kebijakan",
+                    "Fasilitator dialog",
+                    "Penegak hukum",
+                    "Pengawas ibadah"
+                ],
+                correct: 1
+            },
+            {
+                question: "18. Menurut buku tersebut, bagaimana cara menangani ekstremisme beragama?",
+                options: [
+                    "Tindakan represif",
+                    "Pendekatan persuasif",
+                    "Pembiaran",
+                    "Pengasingan"
+                ],
+                correct: 1
+            },
+            {
+                question: "19. Apa fokus utama sosialisasi moderasi beragama?",
+                options: [
+                    "Doktrin keagamaan",
+                    "Pemahaman inklusif",
+                    "Ritual ibadah",
+                    "Hukum agama"
+                ],
+                correct: 1
+            },
+            {
+                question: "20. Bagaimana hubungan antara moderasi beragama dengan pembangunan SDM?",
+                options: [
+                    "Tidak berhubungan",
+                    "Saling menghambat",
+                    "Saling mendukung",
+                    "Berjalan sendiri-sendiri"
+                ],
+                correct: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answers = new Array(quizData.length).fill(null);
+
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const prevBtn = document.getElementById('prev');
+        const nextBtn = document.getElementById('next');
+        const submitBtn = document.getElementById('submit');
+        const quizEl = document.getElementById('quiz');
+        const resultEl = document.getElementById('result');
+        const progressEl = document.getElementById('progress');
+
+        function loadQuestion() {
+            const question = quizData[currentQuestion];
+            questionEl.innerHTML = question.question;
+
+            optionsEl.innerHTML = '';
+            question.options.forEach((option, index) => {
+                const button = document.createElement('div');
+                button.innerHTML = option;
+                button.classList.add('option');
+                if (answers[currentQuestion] === index) {
+                    button.classList.add('selected');
+                }
+                button.addEventListener('click', () => selectOption(index));
+                optionsEl.appendChild(button);
+            });
+
+            updateProgress();
+            updateNavigation();
+        }
+
+        function selectOption(index) {
+            answers[currentQuestion] = index;
+            loadQuestion();
+        }
+
+        function updateNavigation() {
+            prevBtn.style.display = currentQuestion > 0 ? 'block' : 'none';
+            nextBtn.style.display = currentQuestion < quizData.length - 1 ? 'block' : 'none';
+            submitBtn.style.display = currentQuestion === quizData.length - 1 ? 'block' : 'none';
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            progressEl.style.width = progress + '%';
+        }
+
+        function showResult() {
+            score = 0;
+            answers.forEach((answer, index) => {
+                if (answer === quizData[index].correct) {
+                    score += 5; // Each question is worth 5 points (100/20)
+                }
+            });
+
+            quizEl.style.display = 'none';
+            resultEl.style.display = 'block';
+            document.getElementById('score').textContent = score;
+            document.getElementById('correct-answers').textContent = score / 5;
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            }
+        });
+
+        submitBtn.addEventListener('click', showResult);
+
+        // Initial load
+        loadQuestion();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi SKB CPNS Kemenag - Moderasi Beragama</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #ffcee0, #ffc3a0);
+            background-color: #f0f2f5;
+            font-family: Arial, sans-serif;
+            color: #1a1a1a;
+            /* flex-direction: column;
+            line-height: 1.6;
+            align-items: center;
+            justify-content: center;
+            display: flex; */
+        }
+
+        h1 {
+            color: #ff6f91;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .quiz-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .question-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            /* padding: 10px 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block; */
+            background: #ff6f91;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .option:hover {
+            background-color: #e9ecef;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .option:active {
+            transform: scale(0.9);
+            background: #44f9ff;
+        }
+
+        .option.selected {
+            background-color: #007bff;
+            color: white;
+            border-color: #0056b3;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .prev-btn, .next-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .prev-btn:hover, .next-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .submit-btn {
+            background-color: #28a745;
+            color: white;
+            display: none;
+        }
+
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+
+        .result-container {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .result-container.good-score h2 {
+            color: #28a745;
+            animation: fadeInHeart 2s ease-in-out infinite;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .result-container.good-score h2 {
+          color: #28a745;
+          animation: fadeInHeart 2s ease-in-out infinite;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: #007bff;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            .quiz-container {
+                padding: 15px;
+            }
+
+            button {
+                padding: 8px 16px;
+            }
+        }
+
+        @keyframes fadeInHeart {
+          0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+          50% {
+            transform: scale(1.2);
+            opacity: 0.8;
+          }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Simulasi SKB CPNS Kemenag</h1>
+            <b>Tema: Moderasi Beragama</b>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <div class="quiz-container" id="quiz">
+            <div class="question" id="question"></div>
+            <div class="options" id="options"></div>
+            <div class="navigation">
+                <button class="prev-btn" onclick="selectOption(this)" id="prev">EH MUNDUR BENTAR</button>
+                <button class="next-btn" onclick="selectOption(this)" id="next">GOO</button>
+                <button class="submit-btn" onclick="selectOption(this)" id="submit">Selesai</button>
+            </div>
+        </div>
+
+        <div class="result-container" id="result">
+            <h2>Hasil Tes</h2>
+            <p>Skor Anda: <span id="score">0</span> dari 100</p>
+            <p>Jumlah Benar: <span id="correct-answers">0</span> dari 20 soal</p>
+            <button onclick="location.reload()">Ulangi Tes</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "1. Dalam konteks moderasi beragama, apakah makna prinsip (berimbang) menurut buku Moderasi Beragama Kemenag?",
+                options: [
+                    "Menyeimbangkan antara teks dan konteks",
+                    "Selalu berada di tengah-tengah",
+                    "Tidak memihak pada kelompok manapun",
+                    "Menghindari sikap ekstrem dalam beragama"
+                ],
+                correct: 0
+            },
+            {
+                question: "2. Pada tahun berapa Kementerian Agama RI mencanangkan (Tahun Moderasi Beragama)?",
+                options: [
+                    "2018",
+                    "2019",
+                    "2020",
+                    "2021"
+                ],
+                correct: 1
+            },
+            {
+                question: "3. Berdasarkan buku Moderasi Beragama, manakah yang BUKAN merupakan strategi utama penguatan moderasi beragama?",
+                options: [
+                    "Sosialisasi gagasan moderasi beragama",
+                    "Pelembagaan dalam program yang mengikat",
+                    "Penerapan sanksi hukum bagi yang melanggar",
+                    "Integrasi dalam RPJMN 2020-2024"
+                ],
+                correct: 2
+            },
+            {
+                question: "4. Apa tujuan utama penerbitan buku Moderasi Beragama oleh Kementerian Agama RI?",
+                options: [
+                    "Sebagai bahan ajar di sekolah",
+                    "Sebagai rujukan pemahaman moderasi beragama",
+                    "Sebagai pedoman hukum keagamaan",
+                    "Sebagai materi pelatihan ASN"
+                ],
+                correct: 1
+            },
+            {
+                question: "5. Dalam implementasi moderasi beragama, apakah yang dimaksud dengan (toleransi aktif) ?",
+                options: [
+                    "Sikap pasif terhadap perbedaan",
+                    "Keterlibatan aktif dalam dialog antariman",
+                    "Pemaksaan keyakinan pada orang lain",
+                    "Penolakan terhadap ekstremisme"
+                ],
+                correct: 1
+            },
+            {
+                question: "6. Menurut buku tersebut, apa tantangan utama moderasi beragama di era digital?",
+                options: [
+                    "Penyebaran hoaks keagamaan",
+                    "Keterbatasan akses internet",
+                    "Kurangnya literasi digital",
+                    "Mahalnya biaya komunikasi"
+                ],
+                correct: 0
+            },
+            {
+                question: "7. Bagaimana posisi moderasi beragama dalam RPJMN 2020-2024?",
+                options: [
+                    "Sebagai program tambahan",
+                    "Sebagai bagian strategi kebudayaan",
+                    "Sebagai kebijakan opsional",
+                    "Sebagai program temporer"
+                ],
+                correct: 1
+            },
+            {
+                question: "8. Apa indikator utama moderasi beragama menurut buku tersebut?",
+                options: [
+                    "Kepatuhan pada hukum negara",
+                    "Sikap adil dan berimbang",
+                    "Partisipasi politik",
+                    "Ketaatan beribadah"
+                ],
+                correct: 1
+            },
+            {
+                question: "9. Siapa yang bertanggung jawab dalam implementasi moderasi beragama menurut buku tersebut?",
+                options: [
+                    "Hanya Kementerian Agama",
+                    "Seluruh umat beragama",
+                    "Pemerintah pusat saja",
+                    "Tokoh agama saja"
+                ],
+                correct: 1
+            },
+            {
+                question: "10. Bagaimana hubungan antara moderasi beragama dengan nilai-nilai kebangsaan?",
+                options: [
+                    "Saling bertentangan",
+                    "Tidak ada hubungan",
+                    "Saling mendukung",
+                    "Berjalan sendiri-sendiri"
+                ],
+                correct: 2
+            },
+            {
+                question: "11. Apa peran Badan Litbang dan Diklat Kemenag dalam moderasi beragama?",
+                options: [
+                    "Pengawasan pelaksanaan",
+                    "Penyusunan regulasi",
+                    "Penelitian dan pengembangan konsep",
+                    "Penindakan pelanggaran"
+                ],
+                correct: 2
+            },
+            {
+                question: "12. Dalam konteks moderasi beragama, apa yang dimaksud dengan (ekstrem kanan)?",
+                options: [
+                    "Sikap liberal dalam beragama",
+                    "Sikap terlalu keras dalam beragama",
+                    "Sikap moderat dalam beragama",
+                    "Sikap toleran dalam beragama"
+                ],
+                correct: 1
+            },
+            {
+                question: "13. Menurut buku tersebut, apa modal sosial-kultural Indonesia dalam moderasi beragama?",
+                options: [
+                    "Kekayaan alam",
+                    "Tradisi bertenggang rasa",
+                    "Sistem politik",
+                    "Teknologi informasi"
+                ],
+                correct: 1
+            },
+            {
+                question: "14. Bagaimana cara implementasi moderasi beragama di lingkungan ASN Kemenag?",
+                options: [
+                    "Melalui sanksi administratif",
+                    "Melalui internalisasi nilai",
+                    "Melalui paksaan",
+                    "Melalui reward"
+                ],
+                correct: 1
+            },
+            {
+                question: "15. Apa fungsi dialog lintas-iman dalam moderasi beragama?",
+                options: [
+                    "Menyatukan keyakinan",
+                    "Memperkuat toleransi",
+                    "Mengubah keyakinan",
+                    "Menghapus perbedaan"
+                ],
+                correct: 1
+            },
+            {
+                question: "16. Bagaimana posisi moderasi beragama dalam kehidupan bernegara?",
+                options: [
+                    "Terpisah dari negara",
+                    "Bertentangan dengan negara",
+                    "Bagian integral berbangsa",
+                    "Urusan pribadi saja"
+                ],
+                correct: 2
+            },
+            {
+                question: "17. Apa peran FKUB dalam implementasi moderasi beragama?",
+                options: [
+                    "Pembuat kebijakan",
+                    "Fasilitator dialog",
+                    "Penegak hukum",
+                    "Pengawas ibadah"
+                ],
+                correct: 1
+            },
+            {
+                question: "18. Menurut buku tersebut, bagaimana cara menangani ekstremisme beragama?",
+                options: [
+                    "Tindakan represif",
+                    "Pendekatan persuasif",
+                    "Pembiaran",
+                    "Pengasingan"
+                ],
+                correct: 1
+            },
+            {
+                question: "19. Apa fokus utama sosialisasi moderasi beragama?",
+                options: [
+                    "Doktrin keagamaan",
+                    "Pemahaman inklusif",
+                    "Ritual ibadah",
+                    "Hukum agama"
+                ],
+                correct: 1
+            },
+            {
+                question: "20. Bagaimana hubungan antara moderasi beragama dengan pembangunan SDM?",
+                options: [
+                    "Tidak berhubungan",
+                    "Saling menghambat",
+                    "Saling mendukung",
+                    "Berjalan sendiri-sendiri"
+                ],
+                correct: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answers = new Array(quizData.length).fill(null);
+
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const prevBtn = document.getElementById('prev');
+        const nextBtn = document.getElementById('next');
+        const submitBtn = document.getElementById('submit');
+        const quizEl = document.getElementById('quiz');
+        const resultEl = document.getElementById('result');
+        const progressEl = document.getElementById('progress');
+
+        function loadQuestion() {
+            const question = quizData[currentQuestion];
+            questionEl.innerHTML = question.question;
+
+            optionsEl.innerHTML = '';
+            question.options.forEach((option, index) => {
+                const button = document.createElement('div');
+                button.innerHTML = option;
+                button.classList.add('option');
+                if (answers[currentQuestion] === index) {
+                    button.classList.add('selected');
+                }
+                button.addEventListener('click', () => selectOption(index));
+                optionsEl.appendChild(button);
+            });
+
+            updateProgress();
+            updateNavigation();
+        }
+
+        function selectOption(index) {
+            answers[currentQuestion] = index;
+            loadQuestion();
+        }
+
+        function updateNavigation() {
+            prevBtn.style.backgroundColor = '#0056b3';
+            prevBtn.style.color = '#f0f2f5';
+            prevBtn.style.boxShadow = '0 0 20px rgba(249, 249, 249, 0.141)';
+
+            nextBtn.style.backgroundColor = '#0056b3';
+            nextBtn.style.color = '#f0f2f5';
+            nextBtn.style.boxShadow = '0 0 20px rgba(249, 249, 249, 0.141)';
+
+            prevBtn.style.display = currentQuestion > 0 ? 'block' : 'none';
+            nextBtn.style.display = currentQuestion < quizData.length - 1 ? 'block' : 'none';
+            submitBtn.style.display = currentQuestion === quizData.length - 1 ? 'block' : 'none';
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            progressEl.style.width = progress + '%';
+        }
+
+        function showResult() {
+            score = 0;
+            answers.forEach((answer, index) => {
+                if (answer === quizData[index].correct) {
+                    score += 5; // Each question is worth 5 points (100/20)
+                }
+            });
+
+            quizEl.style.display = 'none';
+            resultEl.style.display = 'block';
+            document.getElementById('score').textContent = score;
+            document.getElementById('correct-answers').textContent = score / 5;
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            }
+        });
+
+        submitBtn.addEventListener('click', showResult);
+
+        // Initial load
+        loadQuestion();
+    </script>
+</body>
+</html> -->
